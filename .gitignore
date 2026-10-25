@@ -1,0 +1,21 @@
+# Virtual environment
+.venv/
+
+# Secrets
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Editor / OS files
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Private user data
+uploads/
+reports/
+*.pdf
+*.docx
