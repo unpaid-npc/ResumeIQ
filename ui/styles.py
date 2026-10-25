@@ -123,6 +123,11 @@ p, li, label, span { color: var(--riq-text); }
 .riq-stat b { display: block; font-size: 1.7rem; color: var(--riq-text); }
 .riq-stat span { color: var(--riq-muted); font-size: 0.85rem; }
 
+.riq-scores { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8rem; margin-top: 1rem; }
+.riq-score-high b { color: var(--riq-success); }
+.riq-score-mid b { color: var(--riq-warning); }
+.riq-score-low b { color: var(--riq-error); }
+@media (max-width: 800px) { .riq-scores { grid-template-columns: repeat(2, 1fr); } }
 /* ---------- Progress steps ---------- */
 .riq-step {
   display: flex; align-items: center; gap: 0.7rem;
