@@ -29,3 +29,10 @@
 - Tests: 27 passed (LLM mocked). Live demo: parser output verified, phone correctly null
 - Disabled CrewAI tracing/telemetry (privacy). Ignored .crewai/
 - Next: Day 5 - Skills Analysis and Resume Evaluation agents
+
+## Day 5 - Skills Analysis and Resume Evaluation agents
+- Created: agents/skills_analyst.py, agents/resume_evaluator.py, run_analysis_demo.py
+- Updated: tasks/resume_tasks.py, services/analysis_service.py (3-stage pipeline with one retry on malformed output), tests/test_analysis_service.py
+- Tests: 34 passed (LLM mocked). Live demo verified: demonstrated vs mentioned_only correct, scores plausible, no invented data
+- Known issues to tune on Day 7: Teamwork categorized as leadership; Excel not extracted into tools
+- Next: Day 6 - Job description matching
