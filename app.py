@@ -1,15 +1,24 @@
-"""ResumeIQ entry point. Day 1: only checks that the setup works."""
-import sys
+"""ResumeIQ - Streamlit entry point.
 
-from dotenv import load_dotenv
+Run with:  streamlit run app.py
+"""
 
+import streamlit as st
 
-def main() -> None:
-    load_dotenv()
-    print("ResumeIQ setup OK")
-    print(f"Python: {sys.version.split()[0]}")
-    print(f"Running from: {sys.prefix}")
+from ui.components import render_sidebar_brand
+from ui.pages import PAGES
+from ui.styles import inject_styles
 
+# set_page_config must be the first Streamlit call.
+st.set_page_config(page_title="ResumeIQ", page_icon="◆", layout="wide")
+inject_styles()
 
-if __name__ == "__main__":
-    main()
+render_sidebar_brand()
+choice = st.sidebar.radio("Navigation", list(PAGES), label_visibility="collapsed")
+st.sidebar.divider()
+st.sidebar.caption(
+    "Privacy: uploaded resumes are read from a temporary file and are never "
+    "saved in the project folder."
+)
+
+PAGES[choice]()

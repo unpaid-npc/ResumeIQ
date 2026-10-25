@@ -51,3 +51,15 @@
 - Tests: 53 passed (LLM mocked). Live runs with and without a job description both succeeded
 - Known limits: faithfulness filter checks numbers only, not invented non-numeric claims (prompt rule added); scores vary slightly between runs
 - Next: Day 8 - dark-themed Streamlit UI
+
+## Day 8 - Dark-themed Streamlit UI
+
+- Installed and pinned streamlit==1.66.1; `pip check` reported no broken requirements.
+- Added `.streamlit/config.toml` (dark base theme, 5 MB upload limit, usage stats off, minimal toolbar).
+- Added `ui/` package: `styles.py` (palette and CSS), `components.py` (escaped HTML building blocks), `validation.py`, `upload.py` (temporary-file reader), `runner.py` (validation, reading and analysis with step callbacks), `pages.py` (Dashboard and Analyze Resume).
+- `app.py` is now the real entry point (`streamlit run app.py`).
+- Added `tests/test_app_validation.py` (20 tests, LLM mocked). Full suite: 73 passed.
+- Manual check in the browser: dashboard and analyze pages render in the dark theme, and one full analysis with a synthetic resume and NO job description completed and showed results.
+- Not yet tested in the UI: a run WITH a job description, and a PDF upload.
+- Known limit: the AI analysis is one call, so progress shows 3 honest steps, not per-agent ticks.
+- Next: Day 9 (charts, skills and job-match visuals, bullet rewrites, downloads).
