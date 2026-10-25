@@ -19,3 +19,5 @@ uploads/
 reports/
 *.pdf
 *.docx
+# CrewAI local storage
+.crewai/

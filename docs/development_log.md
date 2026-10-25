@@ -23,3 +23,9 @@
 - Provider: Gemini free tier, model gemini-3.5-flash-lite (set in .env)
 - Created: services/llm_config.py, check_llm.py
 - Tests: 23 passed. Connection test: OK
+
+## Day 4 (part 2) - Resume Parser Agent
+- Created: agents/resume_parser.py, tasks/resume_tasks.py, services/analysis_service.py, run_parser_demo.py
+- Tests: 27 passed (LLM mocked). Live demo: parser output verified, phone correctly null
+- Disabled CrewAI tracing/telemetry (privacy). Ignored .crewai/
+- Next: Day 5 - Skills Analysis and Resume Evaluation agents
