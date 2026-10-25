@@ -25,6 +25,7 @@ def create_parse_task(agent: Agent, resume_text: str) -> Task:
         "- Mark an experience as is_internship true only if the resume says internship or intern.\n"
         "- technical_skills = programming languages, libraries, methods. "
         "business_skills = business or soft skills. tools = software and platforms.\n"
+        "- tools must include EVERY software or platform named anywhere in the resume, including inside job or project bullets (for example Excel), not only in the skills list.\n"
         + JSON_ONLY
         + "JSON SCHEMA:\n" + _schema(ParsedResume) + "\n\n"
         "RESUME TEXT:\n" + resume_text
@@ -44,6 +45,7 @@ def create_skills_task(agent: Agent, parsed: ParsedResume, resume_text: str) -> 
         "Never add a skill the resume does not mention.\n"
         "- category must be one of: technical, data_analytics, business_analytics, "
         "communication, leadership, domain_specific.\n"
+        "- Put soft skills like communication, teamwork and collaboration in the communication category. Use leadership only when the resume shows leading, managing or mentoring people or projects.\n"
         "- status = demonstrated ONLY if a project, job or internship in the resume "
         "shows the skill being used. Otherwise status = mentioned_only.\n"
         "- For a demonstrated skill, evidence = a short pointer to where it is shown "

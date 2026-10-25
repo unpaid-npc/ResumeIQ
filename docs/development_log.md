@@ -43,3 +43,11 @@
 - Tests: 42 passed (LLM mocked). Live demo: statuses plausible; fixed years-of-experience overstatement with a prompt rule
 - Known issues to tune on Day 7: Teamwork categorized as leadership; Excel not extracted into tools
 - Next: Day 7 - Feedback agent and full workflow
+
+## Day 7 - Feedback agent and full workflow
+- Created: agents/feedback_generator.py, tasks/feedback_task.py, services/report_service.py, run_full_demo.py, tests/test_report_service.py
+- Updated: backend/schemas.py (FeedbackDraft), tasks/resume_tasks.py (soft skills to communication, tools from bullets)
+- Design: Feedback agent writes words only; skills, scores and job match are copied by our code. Bullet rewrites are filtered: originals must exist in the resume and improved lines may not contain numbers absent from the resume
+- Tests: 53 passed (LLM mocked). Live runs with and without a job description both succeeded
+- Known limits: faithfulness filter checks numbers only, not invented non-numeric claims (prompt rule added); scores vary slightly between runs
+- Next: Day 8 - dark-themed Streamlit UI
