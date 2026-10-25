@@ -90,6 +90,19 @@ p, li, label, span { color: var(--riq-text); }
 
 .riq-card .riq-badge { margin-top: 0.9rem; }
 
+.riq-agent-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.8rem; height: 1.8rem; margin-bottom: 0.7rem;
+  border-radius: 8px; font-weight: 700;
+  background: rgba(124, 92, 252, 0.2); color: var(--riq-primary);
+}
+.riq-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; margin-top: 1rem; }
+.riq-stat {
+  padding: 0.7rem 1rem;
+  background: var(--riq-bg); border: 1px solid var(--riq-border); border-radius: 12px;
+}
+.riq-stat b { display: block; font-size: 1.7rem; color: var(--riq-text); }
+.riq-stat span { color: var(--riq-muted); font-size: 0.85rem; }
 /* ---------- Progress steps ---------- */
 .riq-step {
   display: flex; align-items: center; gap: 0.7rem;

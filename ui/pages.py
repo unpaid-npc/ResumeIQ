@@ -19,6 +19,32 @@ from ui.validation import describe_error, validate_job_description
 
 REQUIRED_SETTINGS = ("LLM_PROVIDER", "LLM_API_KEY", "LLM_MODEL")
 
+# (name, description, optional?) for the agent team shown on the Dashboard.
+AGENTS = (
+    ("Resume Parser", "Turns the raw resume text into structured data.", False),
+    (
+        "Skills Analyst",
+        "Finds the skills you list and looks for evidence of them in your experience.",
+        False,
+    ),
+    (
+        "Resume Evaluator",
+        "Scores the resume quality and identifies strengths and weaknesses.",
+        False,
+    ),
+    (
+        "Job Matcher",
+        "Compares the resume with a job description. Runs only when you provide one.",
+        True,
+    ),
+    (
+        "Feedback Writer",
+        "Writes the summary, recommendations and bullet rewrites. It writes words "
+        "only: skills, scores and job match are copied by our code, not by the AI.",
+        False,
+    ),
+)
+
 
 def _clean(text: str) -> str:
     """Collapse all whitespace (including blank lines) into single spaces."""
@@ -33,6 +59,43 @@ def _list_card_html(title: str, items: list[str]) -> str:
     else:
         body = "<p>Nothing to show.</p>"
     return f'<div class="riq-card"><h3>{escape(title)}</h3>{body}</div>'
+
+
+def _agent_card_html(number: int, name: str, description: str, optional: bool) -> str:
+    """Build one agent card with its step number."""
+    badge = badge_html("Optional", "info") if optional else ""
+    return (
+        '<div class="riq-card">'
+        f'<div class="riq-agent-num">{number}</div>'
+        f"<h3>{escape(name)}</h3>"
+        f"<p>{escape(description)}</p>"
+        f"{badge}"
+        "</div>"
+    )
+
+
+def _snapshot_html(report: FinalReport) -> str:
+    """Build the 'latest analysis' panel from real counts in the report."""
+    stats = (
+        ("Strengths", len(report.strengths)),
+        ("Weaknesses", len(report.weaknesses)),
+        ("Recommendations", len(report.recommendations)),
+        ("Next steps", len(report.next_steps)),
+    )
+    boxes = "".join(
+        f'<div class="riq-stat"><b>{count}</b><span>{escape(label)}</span></div>'
+        for label, count in stats
+    )
+    if report.job_match is not None:
+        badge = badge_html("Job match included", "info")
+    else:
+        badge = badge_html("No job description used", "warning")
+    return (
+        '<div class="riq-card"><h3>Latest analysis (this session)</h3>'
+        f'<p>Counts from your most recent run. Open "Analyze Resume" to read it.</p>'
+        f'<div class="riq-stats">{boxes}</div>'
+        f'<div style="margin-top:1rem">{badge}</div></div>'
+    )
 
 
 def _llm_is_configured() -> bool:
@@ -66,8 +129,8 @@ def render_dashboard() -> None:
     with col2:
         render_card(
             "2. Agents analyze",
-            "Parser, Skills Analyst, Evaluator and Feedback agents work in turn. "
-            "A Job Matcher joins when you paste a job description.",
+            "Several AI agents work in turn, and each output is validated before "
+            "the next agent starts.",
         )
     with col3:
         render_card(
@@ -76,19 +139,55 @@ def render_dashboard() -> None:
             "steps. Charts and bullet rewrites arrive in the next update.",
         )
 
-    if _llm_is_configured():
-        badge = badge_html("Settings found", "success")
-        body = "The LLM settings are present in your .env file."
-    else:
-        badge = badge_html("Not configured", "error")
-        body = (
-            "One or more LLM settings are missing from your .env file "
-            "(LLM_PROVIDER, LLM_API_KEY, LLM_MODEL)."
-        )
-    st.markdown(card_html("AI model status", body, badge), unsafe_allow_html=True)
+    st.markdown("### Your agent team")
+    for start in range(0, len(AGENTS), 3):
+        cols = st.columns(3)
+        for offset, (name, description, optional) in enumerate(AGENTS[start : start + 3]):
+            with cols[offset]:
+                st.markdown(
+                    _agent_card_html(start + offset + 1, name, description, optional),
+                    unsafe_allow_html=True,
+                )
+
+    left, right = st.columns(2)
+    with left:
+        report = st.session_state.get("report")
+        if report is not None:
+            st.markdown(_snapshot_html(report), unsafe_allow_html=True)
+        else:
+            render_card(
+                "Latest analysis (this session)",
+                "No analysis yet in this session. Results are not saved: they "
+                "disappear when you close or reload the page.",
+                badge_html("Nothing to show", "warning"),
+            )
+    with right:
+        if _llm_is_configured():
+            badge = badge_html("Settings found", "success")
+            body = "The LLM settings are present in your .env file."
+        else:
+            badge = badge_html("Not configured", "error")
+            body = (
+                "One or more LLM settings are missing from your .env file "
+                "(LLM_PROVIDER, LLM_API_KEY, LLM_MODEL)."
+            )
+        st.markdown(card_html("AI model status", body, badge), unsafe_allow_html=True)
+
+    st.markdown(
+        _list_card_html(
+            "Built-in guardrails",
+            [
+                "Skills, scores and job match are copied by code, never rewritten by the AI.",
+                "Numbers that are not in your original resume are filtered out of bullet rewrites.",
+                "Each agent's output is validated before the next agent runs.",
+                "A job description is optional: the app works with or without one.",
+            ],
+        ),
+        unsafe_allow_html=True,
+    )
     st.caption(
-        "This only checks that the settings exist. It does not test the key "
-        "or use any requests."
+        "The model status only checks that the settings exist. It does not test "
+        "the key or use any requests."
     )
 
 
@@ -172,6 +271,9 @@ def render_analyze() -> None:
 
     if run and uploaded is not None:
         _run_analysis(uploaded, job_text, steps_slot)
+    elif st.session_state.get("report") is None:
+        # Nothing has run yet: preview the steps so the page does not look bare.
+        render_steps([(STEP_LABELS[k], "pending") for k in STEP_KEYS], steps_slot)
 
     report = st.session_state.get("report")
     if report is not None:
