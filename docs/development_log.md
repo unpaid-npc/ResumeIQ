@@ -17,3 +17,9 @@
 - Created: backend/schemas.py, tests/test_schemas.py
 - Models for all 5 agents plus safe parser for malformed AI output
 - Next: Day 4 - first CrewAI agent (LLM provider choice)
+
+## Day 4 (part 1) - CrewAI and LLM connection
+- Installed: crewai 1.15.30 (with google-genai extra)
+- Provider: Gemini free tier, model gemini-3.5-flash-lite (set in .env)
+- Created: services/llm_config.py, check_llm.py
+- Tests: 23 passed. Connection test: OK
