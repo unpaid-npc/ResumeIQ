@@ -63,3 +63,10 @@
 - Not yet tested in the UI: a run WITH a job description, and a PDF upload.
 - Known limit: the AI analysis is one call, so progress shows 3 honest steps, not per-agent ticks.
 - Next: Day 9 (charts, skills and job-match visuals, bullet rewrites, downloads).
+
+### Day 8 addendum - theme and polish
+- Dashboard: agent team cards, session-only "latest analysis" panel (real counts only), guardrails list; stats shown as a 2x2 grid.
+- Restyled to a neutral dark-gray, Google AI Studio-like look (Material dark accents). Font: DM Sans via Google Fonts (Google Sans is proprietary), with a system fallback.
+- Fixed button styling with more specific selectors (Streamlit was overriding them).
+- Installed and pinned plotly==7.1.0 for Day 9 (not used yet).
+- Still untested in the UI: a run WITH a job description, and a PDF upload.

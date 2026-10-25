@@ -6,3 +6,4 @@ pydantic==2.12.5
 crewai==1.15.30
 google-genai==1.65.0
 streamlit==1.66.1
+plotly==7.1.0
