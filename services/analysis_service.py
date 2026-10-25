@@ -3,10 +3,12 @@ from dataclasses import dataclass
 
 from crewai import Crew, Process
 
+from agents.job_matcher import create_job_match_agent
 from agents.resume_evaluator import create_evaluator_agent
 from agents.resume_parser import create_resume_parser_agent
 from agents.skills_analyst import create_skills_agent
 from backend.schemas import (
+    JobMatchResult,
     OutputValidationError,
     ParsedResume,
     ResumeEvaluation,
@@ -14,6 +16,7 @@ from backend.schemas import (
     parse_model_output,
 )
 from services.llm_config import get_llm
+from tasks.job_match_task import create_job_match_task
 from tasks.resume_tasks import (
     create_evaluation_task,
     create_parse_task,
@@ -21,6 +24,7 @@ from tasks.resume_tasks import (
 )
 
 MAX_ATTEMPTS = 2  # first try plus one retry if the model returns broken output
+MAX_JOB_DESCRIPTION_CHARS = 8000
 
 
 class AnalysisError(Exception):
@@ -32,6 +36,7 @@ class AnalysisResults:
     parsed: ParsedResume
     skills: SkillsAnalysis
     evaluation: ResumeEvaluation
+    job_match: JobMatchResult | None = None  # None when no job description was given
 
 
 def _run_crew(agents: list, tasks: list) -> str:
@@ -92,10 +97,36 @@ def evaluate_resume(
     return _run_stage(ResumeEvaluation, make)
 
 
-def analyze_resume(resume_text: str) -> AnalysisResults:
-    """Parser -> Skills Analyst -> Evaluator. Each output feeds the next agent."""
+def match_job_description(
+    parsed: ParsedResume,
+    skills: SkillsAnalysis,
+    resume_text: str,
+    job_description: str | None,
+) -> JobMatchResult | None:
+    """Compare resume with job description. Returns None when no job description is given."""
+    if job_description is None or not job_description.strip():
+        return None
+    job_text = job_description.strip()
+    if len(job_text) > MAX_JOB_DESCRIPTION_CHARS:
+        raise AnalysisError(
+            f"The job description is too long (max {MAX_JOB_DESCRIPTION_CHARS} characters)."
+        )
+    llm = get_llm()
+
+    def make():
+        agent = create_job_match_agent(llm)
+        return agent, create_job_match_task(agent, parsed, skills, resume_text, job_text)
+
+    return _run_stage(JobMatchResult, make)
+
+
+def analyze_resume(resume_text: str, job_description: str | None = None) -> AnalysisResults:
+    """Parser -> Skills Analyst -> Evaluator -> (optional) Job Matcher."""
     _require_text(resume_text)
     parsed = parse_resume(resume_text)
     skills = analyze_skills(parsed, resume_text)
     evaluation = evaluate_resume(parsed, skills, resume_text)
-    return AnalysisResults(parsed=parsed, skills=skills, evaluation=evaluation)
+    job_match = match_job_description(parsed, skills, resume_text, job_description)
+    return AnalysisResults(
+        parsed=parsed, skills=skills, evaluation=evaluation, job_match=job_match
+    )

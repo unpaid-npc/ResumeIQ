@@ -36,3 +36,10 @@
 - Tests: 34 passed (LLM mocked). Live demo verified: demonstrated vs mentioned_only correct, scores plausible, no invented data
 - Known issues to tune on Day 7: Teamwork categorized as leadership; Excel not extracted into tools
 - Next: Day 6 - Job description matching
+
+## Day 6 - Job description matching
+- Created: agents/job_matcher.py, tasks/job_match_task.py, tests/test_job_matching.py, run_match_demo.py
+- Updated: services/analysis_service.py (optional matcher stage; skipped when no job description)
+- Tests: 42 passed (LLM mocked). Live demo: statuses plausible; fixed years-of-experience overstatement with a prompt rule
+- Known issues to tune on Day 7: Teamwork categorized as leadership; Excel not extracted into tools
+- Next: Day 7 - Feedback agent and full workflow
