@@ -141,7 +141,7 @@ def render_dashboard() -> None:
         render_card(
             "3. Review",
             "Read the summary, strengths, weaknesses, recommendations and next "
-            "steps. Charts and bullet rewrites arrive in the next update.",
+            "steps, with score charts, skills, job match, rewrites and downloads.",
         )
 
     st.markdown("### Your agent team")
