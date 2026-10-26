@@ -70,3 +70,10 @@
 - Fixed button styling with more specific selectors (Streamlit was overriding them).
 - Installed and pinned plotly==7.1.0 for Day 9 (not used yet).
 - Still untested in the UI: a run WITH a job description, and a PDF upload.
+
+## Day 9 - Analytics and export
+- Added score cards with radar and bar charts (Plotly, dark-styled), skills summary with category chart and evidence, job-match summary with donut chart and requirement details, before/after bullet rewrites, detailed findings.
+- Added JSON and Markdown downloads (ui/export.py). Tests: 103 passed.
+- Verified in the UI: a run without a job description, a run with a job description (7 requirements, 4 supported, 2 partial, 1 no evidence).
+- Not yet tested in the UI: PDF upload.
+- Known limits: rewrite filter checks invented numbers only; rewrites may contain "[add real number if you have one]" placeholders; scores vary between runs; results are not saved after the page closes.
