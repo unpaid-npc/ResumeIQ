@@ -17,6 +17,7 @@ from ui.components import (
 from ui.results import render_scores
 from ui.skills import render_skills
 from ui.jobmatch import render_job_match
+from ui.rewrites import render_findings, render_rewrites
 from ui.runner import STEP_KEYS, STEP_LABELS, InputError, analyze_upload
 from ui.validation import describe_error, validate_job_description
 
@@ -243,9 +244,11 @@ def _render_report(report: FinalReport) -> None:
         unsafe_allow_html=True,
     )
     st.markdown(_list_card_html("Next steps", report.next_steps), unsafe_allow_html=True)
+    render_rewrites(report.bullet_rewrites)
+    render_findings(report.evaluation)
     st.caption(
-        "Skills charts, score charts, job-match charts, bullet rewrites and "
-        "downloads are coming in Day 9."
+        "Downloads of the report are coming next. "
+        "Scores and wording can vary a little between runs."
     )
 
 
