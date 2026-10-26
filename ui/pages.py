@@ -16,6 +16,7 @@ from ui.components import (
 )
 from ui.results import render_scores
 from ui.skills import render_skills
+from ui.jobmatch import render_job_match
 from ui.runner import STEP_KEYS, STEP_LABELS, InputError, analyze_upload
 from ui.validation import describe_error, validate_job_description
 
@@ -228,6 +229,7 @@ def _render_report(report: FinalReport) -> None:
     render_card("Executive summary", _clean(report.executive_summary))
     render_scores(report.evaluation)
     render_skills(report.skills)
+    render_job_match(report.job_match)
 
     left, right = st.columns(2)
     with left:
