@@ -77,3 +77,9 @@
 - Verified in the UI: a run without a job description, a run with a job description (7 requirements, 4 supported, 2 partial, 1 no evidence).
 - Not yet tested in the UI: PDF upload.
 - Known limits: rewrite filter checks invented numbers only; rewrites may contain "[add real number if you have one]" placeholders; scores vary between runs; results are not saved after the page closes.
+
+## Day 10 - Final documentation
+- Fixed stale Dashboard text. Verified a PDF upload end to end (no job description) and downloaded the Markdown and JSON reports.
+- Wrote the full README (agentic design, CrewAI, Mermaid diagram, setup, privacy, limitations), docs/architecture.md and two screenshots.
+- Final check: 103 tests passed, pip check clean.
+- Not tested: a scanned-image PDF (unsupported), a PDF run with a job description.
